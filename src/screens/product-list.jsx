@@ -46,7 +46,7 @@ export default function ProductListScreen() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ headerShown: false }} />
+      {/* <Stack.Screen options={{ headerShown}} /> */}
       <StatusBar
         barStyle="dark-content"
         translucent

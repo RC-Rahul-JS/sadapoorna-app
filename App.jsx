@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Profiler } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -11,7 +11,12 @@ import Mybill from './src/screens/my-bills';
 import Contactus from './src/screens/contact-us';
 import MyOrders from './src/screens/my-orders';
 import Payments from './src/screens/payments';
-// import Productlist from './src/screens/product-list';
+import Productlist from './src/screens/product-list';
+import profile  from './src/screens/profile';
+import Tracker  from './src/screens/tracker';                                 
+import WishlistScreen from './src/screens/wishlist';
+import OffersScreen from './src/screens/offers';
+import Settings from './src/screens/settings';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +32,12 @@ export default function App() {
         <Stack.Screen name="/my-bills" component={Mybill} />
  <Stack.Screen name="/my-orders" component={MyOrders} />
   <Stack.Screen name="/payments" component={Payments} />
-{/* <Stack.Screen name="/productlist" component={Productlist} /> */}
+<Stack.Screen name="/product-list" component={Productlist} />
+<Stack.Screen name="/profile" component={profile} />
+<Stack.Screen name="/tracker" component={Tracker} />
+<Stack.Screen name="/wishlist"component={WishlistScreen} />
+<Stack.Screen name="/offers" component ={OffersScreen} />
+<Stack.Screen name="/settings" component ={Settings} />
 
 
         </Stack.Navigator>

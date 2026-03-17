@@ -1,5 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
     SafeAreaView,
@@ -21,12 +21,13 @@ const THEME = {
 const WISHLIST = ["Imperial Basmati", "Pure Mustard Oil"];
 
 export default function WishlistScreen() {
-  const router = useRouter();
+  const navigation = useNavigation();
+ 
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
+        <TouchableOpacity onPress={() => navigation.goBack} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color={THEME.textMain} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Wishlist</Text>
