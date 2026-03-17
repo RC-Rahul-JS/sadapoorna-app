@@ -1,4 +1,0 @@
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/Debug/2k224v5v/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/Debug/2k224v5v/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/Debug/2k224v5v/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/edit_cache.dir
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/Debug/2k224v5v/armeabi-v7a/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/rebuild_cache.dir

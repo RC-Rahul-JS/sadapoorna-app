@@ -94,7 +94,7 @@ export default function MyOrdersScreen() {
           {!isSearchActive ? (
             <>
               <TouchableOpacity
-                onPress={() => router.back()}
+                onPress={() => navigation.goBack()}
                 style={styles.miniBack}
               >
                 <Ionicons

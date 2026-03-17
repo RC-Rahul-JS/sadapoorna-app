@@ -1,4 +1,3 @@
-
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import React, { useMemo, useState } from "react";
@@ -18,11 +17,9 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { Navbar } from "./Navbar";
-
 // --- COMPONENTS ---
+import { Navbar } from "./Navbar";
 import { CartDrawer } from "./CartDrawer";
-// import { Marquee } from "./Marquee";
 import { ProductCard } from "./ProductCard";
 import { ProductSelectionModal } from "./ProductSelectionModal";
 import { PromiseSection } from "./PromiseSection";
@@ -47,29 +44,25 @@ const ALL_PRODUCTS = Array.from({ length: 100 }).map((_, i) => {
       name: "Imperial Basmati",
       price: 120,
       tag: "Best Seller",
-      image:
-        "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400",
+      image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400",
     },
     {
       name: "Black Forbidden",
       price: 350,
       tag: "Superfood",
-      image:
-        "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=400",
+      image: "https://images.unsplash.com/photo-1536304993881-ff6e9eefa2a6?w=400",
     },
     {
       name: "Organic Brown",
       price: 150,
       tag: "Fiber Rich",
-      image:
-        "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=400",
+      image: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?w=400",
     },
     {
       name: "Pure Mustard Oil",
       price: 210,
       tag: "Cold Pressed",
-      image:
-        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400",
+      image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400",
     },
   ];
   const pick = base[i % 4];
@@ -81,7 +74,6 @@ export default function App() {
   const [sortOrder, setSortOrder] = useState("none");
   const [limit, setLimit] = useState(12);
 
-  // --- CART LOGIC STATES ---
   const [cart, setCart] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showWeightModal, setShowWeightModal] = useState(false);
@@ -119,6 +111,7 @@ export default function App() {
     setShowCartDrawer(false);
   };
 
+  // --- REORDERED HEADER ---
   const Header = () => (
     <View style={styles.header}>
       <LinearGradient
@@ -128,7 +121,7 @@ export default function App() {
         style={styles.backgroundGradient}
       />
 
-      {/* Updated helloContainer: Notification circle removed */}
+      {/* 1. Greeting */}
       <View style={styles.helloContainer}>
         <View>
           <Text style={styles.helloText}>Healthy Morning,</Text>
@@ -136,11 +129,16 @@ export default function App() {
         </View>
       </View>
 
-      <PromoBanners />
+      {/* 2. Banners (Moved here, directly below Rahul) */}
+      <View style={{ marginBottom: 15 }}>
+        <PromoBanners />
+      </View>
+
+      {/* 3. Secondary Info Sections */}
       <PromiseSection />
       <QuickActions />
-      {/* <Marquee /> */}
 
+      {/* 4. Search Bar */}
       <View style={styles.searchContainer}>
         <Ionicons
           name="search-outline"
@@ -160,6 +158,7 @@ export default function App() {
         />
       </View>
 
+      {/* 5. Note Section */}
       <View style={styles.noteContainer}>
         <View style={styles.noteHeader}>
           <Ionicons name="alert-circle" size={16} color={THEME.primary} />
@@ -174,6 +173,7 @@ export default function App() {
         </Text>
       </View>
 
+      {/* 6. Filter Chips */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -199,6 +199,7 @@ export default function App() {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      
       <Text style={styles.sectionTitle}>Popular Products</Text>
     </View>
   );
@@ -348,7 +349,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 10, // Reduced to sit closer to banner
   },
   helloText: { color: THEME.textMuted, fontSize: 14 },
   userName: { fontSize: 28, fontWeight: "900", color: THEME.textMain },

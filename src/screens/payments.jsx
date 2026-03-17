@@ -11,7 +11,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+// @ts-ignore
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import RNPrint from 'react-native-print';
+import Share from 'react-native-share';
 import { useNavigation } from "@react-navigation/native";
 
 const THEME = {
@@ -32,47 +36,15 @@ export default function PaymentsScreen() {
   const [isCustom, setIsCustom] = useState(false);
 
   const [entries, setEntries] = useState([
-    {
-      date: "20/02/2026",
-      particular: "Payment - Raju Rai",
-      debit: "0.00",
-      credit: "500.00",
-      balance: "0.00",
-    },
-    {
-      date: "14/02/2026",
-      particular: "Payment - Bhagchad Nageshwar",
-      debit: "0.00",
-      credit: "520.00",
-      balance: "500.00",
-    },
-    {
-      date: "14/02/2026",
-      particular: "Goods Sold - INV/1709",
-      debit: "1020.00",
-      credit: "0.00",
-      balance: "1020.00",
-    },
-    {
-      date: "08/02/2026",
-      particular: "Payment - Bhagchad Nageshwar",
-      debit: "0.00",
-      credit: "1300.00",
-      balance: "0.00",
-    },
-    {
-      date: "01/05/2025",
-      particular: "Opening Balance",
-      debit: "0.00",
-      credit: "0.00",
-      balance: "0.00",
-    },
+    { date: "20/02/2026", particular: "Payment - Raju Rai", debit: "0.00", credit: "500.00", balance: "0.00" },
+    { date: "14/02/2026", particular: "Payment - Bhagchad Nageshwar", debit: "0.00", credit: "520.00", balance: "500.00" },
+    { date: "14/02/2026", particular: "Goods Sold - INV/1709", debit: "1020.00", credit: "0.00", balance: "1020.00" },
+    { date: "08/02/2026", particular: "Payment - Bhagchad Nageshwar", debit: "0.00", credit: "1300.00", balance: "0.00" },
+    { date: "01/05/2025", particular: "Opening Balance", debit: "0.00", credit: "0.00", balance: "0.00" },
   ]);
 
   useEffect(() => {
-    if (!isCustom) {
-      setPayAmount(currentDue.toString());
-    }
+    if (!isCustom) setPayAmount(currentDue.toString());
   }, [currentDue, isCustom]);
 
   const handleRazorpay = () => {
@@ -81,11 +53,6 @@ export default function PaymentsScreen() {
       Alert.alert("Error", "Sahi amount bharein.");
       return;
     }
-    if (amountToPay > currentDue) {
-      Alert.alert("Limit", "Due se zyada payment nahi ho sakti.");
-      return;
-    }
-
     Alert.alert("Razorpay", `Confirm payment of ₹${amountToPay}?`, [
       { text: "Cancel", style: "cancel" },
       {
@@ -93,7 +60,7 @@ export default function PaymentsScreen() {
         onPress: () => {
           const newDue = currentDue - amountToPay;
           const newEntry = {
-            date: "21/02/2026", 
+            date: "21/02/2026",
             particular: "Payment Received - Razorpay",
             debit: "0.00",
             credit: amountToPay.toFixed(2),
@@ -107,33 +74,66 @@ export default function PaymentsScreen() {
     ]);
   };
 
+  // --- REACT NATIVE PRINT & SHARE ---
+  const downloadStatement = async () => {
+    const htmlContent = `
+      <html>
+        <body style="font-family: Arial; padding: 20px;">
+          <h1 style="color: #EE2726; text-align: center;">SADAPOORNA TRADERS</h1>
+          <hr/>
+          <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <tr style="background-color: #f8efda;">
+              <th style="border: 1px solid #000; padding: 8px;">DATE</th>
+              <th style="border: 1px solid #000; padding: 8px;">PARTICULAR</th>
+              <th style="border: 1px solid #000; padding: 8px;">BALANCE</th>
+            </tr>
+            ${entries.map(e => `
+              <tr>
+                <td style="border: 1px solid #000; padding: 8px;">${e.date}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${e.particular}</td>
+                <td style="border: 1px solid #000; padding: 8px;">${e.balance}</td>
+              </tr>
+            `).join("")}
+          </table>
+        </body>
+      </html>
+    `;
+
+    try {
+      // 1. Generate and Print/Save PDF
+      const results = await RNPrint.print({
+        html: htmlContent,
+        fileName: 'Statement_Sadapoorna',
+      });
+
+      // 2. Share option (Optional: can also use react-native-share with base64 if needed)
+      if (Platform.OS === 'android') {
+        Alert.alert("PDF Generated", "Your statement is ready to print or save.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Could not generate PDF");
+    }
+  };
+
   return (
-    <View style={styles.safeArea}>
-      <StatusBar
-        barStyle="dark-content"
-        translucent={false} // Forces content below the bar
-        backgroundColor={THEME.secondaryBg} // Matches the top section color
-      />
-      {/* Background layer */}
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <View style={styles.secondBackground} />
 
-      <SafeAreaView style={styles.container}>
-        {/* Header with fixed spacing for notch */}
+      <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.miniBack}
-          >
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.miniBack}>
             <Ionicons name="chevron-back" size={24} color={THEME.textMain} />
           </TouchableOpacity>
+
           <Text style={styles.headerTitle}>Statement & Payments</Text>
-          <View style={{ width: 42 }} />
+
+          <TouchableOpacity onPress={downloadStatement} style={styles.miniBack}>
+            <Ionicons name="cloud-download" size={22} color={THEME.primary} />
+          </TouchableOpacity>
         </View>
 
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}
-        >
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
           <View style={styles.mainCard}>
             <Text style={styles.label}>Current Outstanding</Text>
             <Text style={styles.dueValue}>₹ {currentDue.toFixed(2)}</Text>
@@ -146,20 +146,13 @@ export default function PaymentsScreen() {
                 style={[styles.optionBtn, !isCustom && styles.activeBtn]}
                 onPress={() => setIsCustom(false)}
               >
-                <Text style={[styles.optionText, !isCustom && styles.activeText]}>
-                  Full Due
-                </Text>
+                <Text style={[styles.optionText, !isCustom && styles.activeText]}>Full Due</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.optionBtn, isCustom && styles.activeBtn]}
-                onPress={() => {
-                  setIsCustom(true);
-                  setPayAmount(currentDue.toString());
-                }}
+                onPress={() => { setIsCustom(true); setPayAmount(currentDue.toString()); }}
               >
-                <Text style={[styles.optionText, isCustom && styles.activeText]}>
-                  Custom
-                </Text>
+                <Text style={[styles.optionText, isCustom && styles.activeText]}>Custom</Text>
               </TouchableOpacity>
             </View>
 
@@ -206,19 +199,10 @@ export default function PaymentsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { 
-    flex: 1, 
-    backgroundColor: THEME.bg 
-  },
-  container: { 
-    flex: 1 
-  },
+  container: { flex: 1, backgroundColor: THEME.bg },
   secondBackground: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     backgroundColor: THEME.secondaryBg,
     zIndex: -1,
   },
@@ -227,140 +211,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    // We use a safe 20px padding if notch detection fails
-    paddingTop: Platform.OS === "android" ? 20 : 10, 
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 10,
     paddingBottom: 15,
   },
   miniBack: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    backgroundColor: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 3,
+    width: 42, height: 42, borderRadius: 14,
+    backgroundColor: "#FFF", justifyContent: "center", alignItems: "center",
+    elevation: 4, shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3,
   },
-  headerTitle: { 
-    fontSize: 18, 
-    fontWeight: "900", 
-    color: THEME.textMain 
-  },
-  content: { 
-    paddingHorizontal: 20, 
-    paddingBottom: 30 
-  },
+  headerTitle: { fontSize: 18, fontWeight: "900", color: THEME.textMain },
+  content: { paddingHorizontal: 20, paddingBottom: 30 },
   mainCard: {
-    backgroundColor: "#FFF",
-    padding: 20,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: THEME.primary,
-    marginBottom: 15,
+    backgroundColor: "#FFF", padding: 20, borderRadius: 25,
+    borderWidth: 1, borderColor: THEME.primary, marginBottom: 15,
   },
-  label: {
-    fontSize: 11,
-    fontWeight: "800",
-    color: THEME.textMuted,
-    marginBottom: 5,
-  },
-  dueValue: { 
-    fontSize: 30, 
-    fontWeight: "900", 
-    color: THEME.primary 
-  },
-  paySection: {
-    backgroundColor: "#FFF",
-    padding: 20,
-    borderRadius: 25,
-    marginBottom: 20,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "900",
-    marginBottom: 12,
-    color: THEME.textMain,
-  },
-  optionRow: { 
-    flexDirection: "row", 
-    marginBottom: 15 
-  },
-  optionBtn: {
-    flex: 1,
-    padding: 12,
-    alignItems: "center",
-    borderRadius: 12,
-    backgroundColor: "#F5F5F5",
-    marginRight: 8,
-  },
-  activeBtn: { 
-    backgroundColor: THEME.textMain 
-  },
-  optionText: { 
-    fontSize: 12, 
-    fontWeight: "700", 
-    color: THEME.textMuted 
-  },
-  activeText: { 
-    color: "#FFF" 
-  },
-  input: {
-    borderBottomWidth: 2,
-    borderBottomColor: THEME.accent,
-    padding: 10,
-    fontSize: 18,
-    fontWeight: "700",
-    marginBottom: 15,
-  },
-  razorBtn: {
-    backgroundColor: THEME.primary,
-    height: 55,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  razorText: { 
-    color: "#FFF", 
-    fontWeight: "900", 
-    fontSize: 16 
-  },
-  table: {
-    backgroundColor: "#FFF",
-    borderRadius: 20,
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: THEME.border,
-  },
-  thRow: {
-    flexDirection: "row",
-    backgroundColor: THEME.secondaryBg,
-    padding: 12,
-  },
-  th: { 
-    fontSize: 11, 
-    fontWeight: "900", 
-    color: THEME.textMuted 
-  },
-  tr: {
-    flexDirection: "row",
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: THEME.border,
-    alignItems: "center",
-  },
-  td: { 
-    fontSize: 11, 
-    fontWeight: "600" 
-  },
-  tdMain: { 
-    fontSize: 12, 
-    fontWeight: "800", 
-    color: THEME.textMain 
-  },
-  tdSub: { 
-    fontSize: 10, 
-    color: THEME.textMuted, 
-    fontWeight: "600" 
-  },
+  label: { fontSize: 11, fontWeight: "800", color: THEME.textMuted, marginBottom: 5 },
+  dueValue: { fontSize: 30, fontWeight: "900", color: THEME.primary },
+  paySection: { backgroundColor: "#FFF", padding: 20, borderRadius: 25, marginBottom: 20, elevation: 2 },
+  sectionTitle: { fontSize: 16, fontWeight: "900", marginBottom: 12, color: THEME.textMain },
+  optionRow: { flexDirection: "row", marginBottom: 15 },
+  optionBtn: { flex: 1, padding: 12, alignItems: "center", borderRadius: 12, backgroundColor: "#F5F5F5", marginRight: 8 },
+  activeBtn: { backgroundColor: THEME.textMain },
+  optionText: { fontSize: 12, fontWeight: "700", color: THEME.textMuted },
+  activeText: { color: "#FFF" },
+  input: { borderBottomWidth: 2, borderBottomColor: THEME.accent, padding: 10, fontSize: 18, fontWeight: "700", marginBottom: 15 },
+  razorBtn: { backgroundColor: THEME.primary, height: 55, borderRadius: 15, justifyContent: "center", alignItems: "center", flexDirection: "row" },
+  razorText: { color: "#FFF", fontWeight: "900", fontSize: 16 },
+  table: { backgroundColor: "#FFF", borderRadius: 20, overflow: "hidden", borderWidth: 1, borderColor: THEME.border },
+  thRow: { flexDirection: "row", backgroundColor: THEME.secondaryBg, padding: 12 },
+  th: { fontSize: 11, fontWeight: "900", color: THEME.textMuted },
+  tr: { flexDirection: "row", padding: 12, borderBottomWidth: 1, borderBottomColor: THEME.border, alignItems: "center" },
+  td: { fontSize: 11, fontWeight: "600" },
+  tdMain: { fontSize: 12, fontWeight: "800", color: THEME.textMain },
+  tdSub: { fontSize: 10, color: THEME.textMuted, fontWeight: "600" },
 });
