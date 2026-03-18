@@ -3,6 +3,6 @@
   "compilerOptions": {
     "types": ["jest"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "src/components/sadapoorna/Navbar.jsx", "src/components/sadapoorna/HomeScreen.jsx", "src/components/sadapoorna/CartDrawer.jsx", "src/components/sadapoorna/ProductCard.jsx", "src/screens/my-bills.jsx", "src/screens/help.jsx", "src/screens/contact-us.jsx", "src/screens/AboutUsScreen.jsx", "src/components/sadapoorna/QuickActions.jsx", "src/components/sadapoorna/PromiseSection.jsx", "src/components/sadapoorna/ProductSelectionModal.jsx", "src/components/sadapoorna/Marquee.jsx"],
+  "include": ["**/*.ts", "**/*.tsx", "src/components/sadapoorna/Navbar.jsx", "src/components/sadapoorna/HomeScreen.jsx", "src/components/sadapoorna/CartDrawer.jsx", "src/components/sadapoorna/ProductCard.jsx", "src/screens/my-bills.jsx", "src/screens/help.jsx", "src/screens/contact-us.jsx", "src/screens/AboutUsScreen.jsx", "src/components/sadapoorna/QuickActions.jsx", "src/components/sadapoorna/PromiseSection.jsx", "src/components/sadapoorna/ProductSelectionModal.jsx", "src/components/sadapoorna/Marquee.jsx", "src/screens/settings.jsx", "src/screens/offers.jsx", "src/screens/tracker.jsx", "src/screens/profile.jsx"],
   "exclude": ["**/node_modules", "**/Pods"]
 }

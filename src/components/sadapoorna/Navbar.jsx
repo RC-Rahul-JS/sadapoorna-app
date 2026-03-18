@@ -10,20 +10,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+// 1. Import useNavigation
+import { useNavigation } from "@react-navigation/native";
 
 const THEME = {
   primary: "#EE2726",
   textMain: "#FFFFFF",
-  navyDark: "#f1cb6a", // Deep Navy as seen in your screenshot
+  navyDark: "#f1cb6a", 
   navyLight: "#ede5b0",
 };
 
-
-
 export const Navbar = ({ cartCount, onCartPress }) => {
+  // 2. Initialize navigation
+  const navigation = useNavigation();
   const animatedValue = new Animated.Value(0);
 
-  // Shimmer effect logic for the brand logo
   useEffect(() => {
     const startShimmer = () => {
       animatedValue.setValue(0);
@@ -44,7 +45,6 @@ export const Navbar = ({ cartCount, onCartPress }) => {
 
   return (
     <View style={styles.navContainer}>
-      {/* Background Navy Blue Gradient */}
       <LinearGradient
         colors={[THEME.navyDark, THEME.navyLight]}
         start={{ x: 0, y: 0 }}
@@ -53,21 +53,24 @@ export const Navbar = ({ cartCount, onCartPress }) => {
       />
 
       <View style={styles.nav}>
-        {/* Left Side: Profile Avatar */}
-        <TouchableOpacity activeOpacity={0.8} style={styles.profileBtn}>
-          <View style={styles.avatarBorder}>
-            <Text style={styles.avatarText}>RA</Text>
-          </View>
-        </TouchableOpacity>
+        {/* 3. Update the profileBtn to navigate to "Profile" */}
+      <TouchableOpacity 
+  activeOpacity={0.8} 
+  style={styles.profileBtn}
+  // This must match the name in App.jsx exactly
+  onPress={() => navigation.navigate('/profile')} 
+>
+  <View style={styles.avatarBorder}>
+    <Text style={styles.avatarText}>RA</Text>
+  </View>
+</TouchableOpacity>
 
-        {/* Center: Corrected Sadapoorna Logo URL */}
         <View style={styles.logoWrapper}>
           <Image
             source={{ uri: "https://sadapoorna.in/icons/Group.png" }}
             style={styles.logoImage}
             resizeMode="contain"
           />
-          {/* Shine Effect Overlay */}
           <Animated.View
             style={[styles.shimmerBox, { transform: [{ translateX }] }]}
           >
@@ -84,7 +87,6 @@ export const Navbar = ({ cartCount, onCartPress }) => {
           </Animated.View>
         </View>
 
-        {/* Right Side: Cart Bag */}
         <TouchableOpacity onPress={onCartPress} activeOpacity={0.7}>
           <View style={styles.iconWrapper}>
             <Ionicons name="bag-handle-outline" size={28} color="#FFFFFF" />
@@ -100,6 +102,7 @@ export const Navbar = ({ cartCount, onCartPress }) => {
   );
 };
 
+// ... styles remain exactly the same as your provided code
 const styles = StyleSheet.create({
   navContainer: {
     width: "100%",

@@ -2,8 +2,10 @@ import React, { Profiler } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { LoadingProvider } from './src/context/LoadingContext';
 
 // HomeScreen import karein (Path: src/screens/HomeScreen.tsx)
+import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/components/sadapoorna/HomeScreen';
 import AboutUsScreen from './src/screens/AboutUsScreen';
 import Help from './src/screens/help';
@@ -17,14 +19,18 @@ import Tracker  from './src/screens/tracker';
 import WishlistScreen from './src/screens/wishlist';
 import OffersScreen from './src/screens/offers';
 import Settings from './src/screens/settings';
+import LoadingScreen from './src/screens/LoadingScreen';
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <LoadingProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Loading" component={LoadingScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="/about-us" component={AboutUsScreen} />
           <Stack.Screen name="/contact-us" component={Contactus} />
@@ -42,6 +48,7 @@ export default function App() {
 
         </Stack.Navigator>
       </NavigationContainer>
+      </LoadingProvider>
     </GestureHandlerRootView>
   );
 }
