@@ -9,9 +9,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  StatusBar, // Added StatusBar
 } from "react-native";
-// 1. Import useNavigation
 import { useNavigation } from "@react-navigation/native";
+// 1. Import useSafeAreaInsets
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const THEME = {
   primary: "#EE2726",
@@ -21,8 +23,8 @@ const THEME = {
 };
 
 export const Navbar = ({ cartCount, onCartPress }) => {
-  // 2. Initialize navigation
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets(); // 2. Get the notch height (top)
   const animatedValue = new Animated.Value(0);
 
   useEffect(() => {
@@ -45,6 +47,9 @@ export const Navbar = ({ cartCount, onCartPress }) => {
 
   return (
     <View style={styles.navContainer}>
+      {/* 3. Make Status Bar transparent so the gradient shows behind it */}
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      
       <LinearGradient
         colors={[THEME.navyDark, THEME.navyLight]}
         start={{ x: 0, y: 0 }}
@@ -52,18 +57,17 @@ export const Navbar = ({ cartCount, onCartPress }) => {
         style={styles.backgroundGradient}
       />
 
-      <View style={styles.nav}>
-        {/* 3. Update the profileBtn to navigate to "Profile" */}
-      <TouchableOpacity 
-  activeOpacity={0.8} 
-  style={styles.profileBtn}
-  // This must match the name in App.jsx exactly
-  onPress={() => navigation.navigate('/profile')} 
->
-  <View style={styles.avatarBorder}>
-    <Text style={styles.avatarText}>RA</Text>
-  </View>
-</TouchableOpacity>
+      {/* 4. Apply dynamic paddingTop based on the device notch */}
+      <View style={[styles.nav, { paddingTop: insets.top + 10 }]}>
+        <TouchableOpacity 
+          activeOpacity={0.8} 
+          style={styles.profileBtn}
+          onPress={() => navigation.navigate('/profile')} 
+        >
+          <View style={styles.avatarBorder}>
+            <Text style={styles.avatarText}>RA</Text>
+          </View>
+        </TouchableOpacity>
 
         <View style={styles.logoWrapper}>
           <Image
@@ -75,11 +79,7 @@ export const Navbar = ({ cartCount, onCartPress }) => {
             style={[styles.shimmerBox, { transform: [{ translateX }] }]}
           >
             <LinearGradient
-              colors={[
-                "transparent",
-                "rgba(255, 255, 255, 0.4)",
-                "transparent",
-              ]}
+              colors={["transparent", "rgba(255, 255, 255, 0.4)", "transparent"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.shimmerGradient}
@@ -102,7 +102,6 @@ export const Navbar = ({ cartCount, onCartPress }) => {
   );
 };
 
-// ... styles remain exactly the same as your provided code
 const styles = StyleSheet.create({
   navContainer: {
     width: "100%",
@@ -120,12 +119,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingTop: 50,
+    // Removed fixed paddingTop: 50
     paddingBottom: 15,
   },
-  profileBtn: {
-    elevation: 5,
-  },
+  // ... rest of your styles stay the same
+  profileBtn: { elevation: 5 },
   avatarBorder: {
     width: 40,
     height: 40,
@@ -136,34 +134,12 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#FFF",
   },
-  avatarText: {
-    color: "#FFF",
-    fontWeight: "800",
-    fontSize: 14,
-  },
-  logoWrapper: {
-    width: 150,
-    height: 40,
-    overflow: "hidden",
-    justifyContent: "center",
-  },
-  logoImage: {
-    width: "100%",
-    height: "100%",
-  },
-  shimmerBox: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: 100,
-  },
-  shimmerGradient: {
-    flex: 1,
-  },
-  iconWrapper: {
-    position: "relative",
-    padding: 5,
-  },
+  avatarText: { color: "#FFF", fontWeight: "800", fontSize: 14 },
+  logoWrapper: { width: 150, height: 40, overflow: "hidden", justifyContent: "center" },
+  logoImage: { width: "100%", height: "100%" },
+  shimmerBox: { position: "absolute", top: 0, bottom: 0, width: 100 },
+  shimmerGradient: { flex: 1 },
+  iconWrapper: { position: "relative", padding: 5 },
   badge: {
     position: "absolute",
     top: 0,
@@ -177,9 +153,5 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: "#FFF",
   },
-  badgeText: {
-    color: "#FFF",
-    fontSize: 9,
-    fontWeight: "900",
-  },
+  badgeText: { color: "#FFF", fontSize: 9, fontWeight: "900" },
 });

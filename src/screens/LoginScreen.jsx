@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, Text, TextInput, TouchableOpacity, StyleSheet, 
   Image, SafeAreaView, KeyboardAvoidingView, Platform, 
-  Dimensions, ScrollView, Animated, Easing 
+  Dimensions, ScrollView, Animated, Easing, ActivityIndicator, Alert 
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { API_URL, API_KEY } from '@env';
+import axios from 'axios';
 
 const { width } = Dimensions.get('window');
 
@@ -13,6 +15,7 @@ const LoginScreen = ({ navigation }) => {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false); // New State for Sign Up
   const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
 
   // Logo Shine Animation Setup
   const shineAnim = useRef(new Animated.Value(-width * 0.4)).current; 
@@ -30,7 +33,59 @@ const LoginScreen = ({ navigation }) => {
     return () => shineLoop.stop();
   }, [shineAnim]);
 
-  return (
+  const handleSendOtp = async () => {
+    if (phoneNumber.length !== 10) {
+      Alert.alert("Invalid Number", "Please enter a valid 10-digit mobile number.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Adjust the endpoint path according to your actual backend API
+      const endpoint = '/auth/send-otp';
+      // const endpoint = isSignUp ? '/auth/register' : '/auth/login';
+      
+      const response = await axios.post(`${API_URL}${endpoint}`, {
+        phone: `${phoneNumber}`,
+      });
+
+      if (response.status === 200) {
+        setIsOtpSent(true);
+      }
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "Something went wrong. Please try again.";
+      Alert.alert("Request Failed", errorMsg);
+      console.log(error)
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      Alert.alert("Invalid OTP", "Please enter the 6-digit code.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API_URL}/auth/verify-otp`, {
+        phone: `${phoneNumber}`,
+        otp: `${otp}`
+      });
+
+      if (response.data.token) {
+        // Save token here (e.g., AsyncStorage) then navigate
+        Alert.alert(response.data?.status);
+        navigation.replace("Home");
+      }
+    } catch (error) {
+      Alert.alert("Verification Failed", "The OTP you entered is incorrect.");
+    } finally {
+      setLoading(false);
+    }
+  };
+return (
     <LinearGradient 
       colors={['#F1DBA2', '#F9F1DC', '#FDFAF3']} 
       start={{ x: 0, y: 0.5 }} 
@@ -58,11 +113,10 @@ const LoginScreen = ({ navigation }) => {
                   ]} 
                 />
               </View>
-              <Text style={styles.brandTitle}>Pure and safe </Text>
+              <Text style={styles.brandTitle}>Trusted partner in rice, grains, and essential commodities.</Text>
             </View>
 
             <View style={styles.card}>
-              {/* WELCOME MESSAGE */}
               <Text style={styles.welcomeText}>
                 {isSignUp ? "Namaste! 🙏" : "Welcome back!"}
               </Text>
@@ -89,22 +143,28 @@ const LoginScreen = ({ navigation }) => {
                       placeholderTextColor="#999"
                       value={phoneNumber}
                       onChangeText={setPhoneNumber}
+                      editable={!loading}
                     />
                   </View>
 
                   <TouchableOpacity 
-                    style={styles.redButton} 
-                    onPress={() => setIsOtpSent(true)}
+                    style={[styles.redButton, loading && { opacity: 0.7 }]} 
+                    onPress={handleSendOtp}
+                    disabled={loading}
                   >
-                    <Text style={styles.buttonText}>
-                        {isSignUp ? "REGISTER VIA WHATSAPP" : "GET OTP VIA WHATSAPP"}
-                    </Text>
+                    {loading ? (
+                        <ActivityIndicator color="#FFF" />
+                    ) : (
+                        <Text style={styles.buttonText}>
+                            {isSignUp ? "REGISTER VIA WHATSAPP" : "GET OTP VIA WHATSAPP"}
+                        </Text>
+                    )}
                   </TouchableOpacity>
 
-                  {/* SIGN UP / LOGIN TOGGLE */}
                   <TouchableOpacity 
                     onPress={() => setIsSignUp(!isSignUp)}
                     style={styles.toggleContainer}
+                    disabled={loading}
                   >
                     <Text style={styles.toggleText}>
                       {isSignUp ? "Already have an account? " : "Don't have an account? "}
@@ -124,16 +184,22 @@ const LoginScreen = ({ navigation }) => {
                     value={otp}
                     onChangeText={setOtp}
                     autoFocus
+                    editable={!loading}
                   />
                   
                   <TouchableOpacity 
-                    style={styles.redButton} 
-                    onPress={() => navigation.replace("Home")}
+                    style={[styles.redButton, loading && { opacity: 0.7 }]} 
+                    onPress={handleVerifyOtp}
+                    disabled={loading}
                   >
-                    <Text style={styles.buttonText}>VERIFY & {isSignUp ? "REGISTER" : "LOGIN"}</Text>
+                    {loading ? (
+                        <ActivityIndicator color="#FFF" />
+                    ) : (
+                        <Text style={styles.buttonText}>VERIFY & {isSignUp ? "REGISTER" : "LOGIN"}</Text>
+                    )}
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => setIsOtpSent(false)}>
+                  <TouchableOpacity onPress={() => setIsOtpSent(false)} disabled={loading}>
                     <Text style={styles.changeText}>Change Mobile Number</Text>
                   </TouchableOpacity>
                 </View>
@@ -150,7 +216,6 @@ const LoginScreen = ({ navigation }) => {
     </LinearGradient>
   );
 };
-
 const styles = StyleSheet.create({
   gradientBg: { flex: 1 },
   container: { flex: 1 }, 
@@ -168,7 +233,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     transform: [{ rotate: '25deg' }], 
   },
-  brandTitle: { fontSize: 12, fontWeight: 'bold', color: '#C02E2E', letterSpacing: 2, marginTop: 10 },
+  brandTitle: { fontSize: 10, fontWeight: 'bold', color: '#C02E2E', letterSpacing: 2, marginTop: 10,textAlign:'center' },
 
   card: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)', 
