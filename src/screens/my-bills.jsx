@@ -3,7 +3,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
  // PDF Generation ke liye
 import { useNavigation } from "@react-navigation/native";
 // import Share from 'react-native-share';
-import React, { useMemo, useState } from "react";
+import React, { use, useMemo, useState, useEffect } from "react";
 import {
   Alert,
   LayoutAnimation,
@@ -17,6 +17,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import useApi  from "../context/useApi";
 
 const THEME = {
   bg: "#FFFFFF",
@@ -49,6 +50,24 @@ export default function MyBillsScreen() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchActive, setIsSearchActive] = useState(false);
+  const [invoices,setInvoices] = useState([]);
+
+  const { getRequest } = useApi();
+
+  const getInvoices = async () => {
+    const res = await getRequest("/api/my/invoices");
+    console.log(res);
+    if (res.status) {
+      console.log("Invoices fetched:", res.invoices);
+      setInvoices(res?.invoices||[]);
+    } else {
+      Alert.alert(res.error);
+    }
+  };
+
+  useEffect(() => {
+    getInvoices();
+  }, []);
 
   // --- PDF DOWNLOAD LOGIC ---
   const downloadBill = async (bill) => {
@@ -95,13 +114,13 @@ export default function MyBillsScreen() {
     // }
   };
 
-  const filteredBills = useMemo(() => {
-    return DUMMY_BILLS.filter(
-      (bill) =>
-        bill.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bill.type.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [searchQuery]);
+  // const filteredBills = useMemo(() => {
+  //   return invoices.filter(
+  //     (bill) =>
+  //       bill.invoiceNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       bill.type.toLowerCase().includes(searchQuery.toLowerCase()),
+  //   );
+  // }, [searchQuery]);
 
   const toggleSearch = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -162,8 +181,9 @@ export default function MyBillsScreen() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingTop: 10, paddingBottom: 40 }}
           >
-            {filteredBills.map((bill) => (
-              <View key={bill.id} style={styles.miniCard}>
+            {Array.isArray(invoices) && invoices.length > 0 &&
+            invoices.map((bill) => (
+              <View key={bill._id} style={styles.miniCard}>
                 <View style={styles.iconCircle}>
                   <Ionicons
                     name="document-text"
@@ -174,13 +194,13 @@ export default function MyBillsScreen() {
 
                 <View style={styles.infoArea}>
                   <View style={styles.row}>
-                    <Text style={styles.billId}>{bill.id}</Text>
-                    <Text style={styles.priceText}>₹{bill.amount}</Text>
+                    <Text style={styles.billId}>INV/{bill.invoiceNo}</Text>
+                    <Text style={styles.priceText}>₹{bill.total}</Text>
                   </View>
 
                   <View style={styles.row}>
                     <Text style={styles.subText}>
-                      {bill.type} • {bill.date}
+                      {new Date(bill.billingdate).toLocaleDateString("en-GB")}
                     </Text>
                     <TouchableOpacity
                       style={styles.pdfBadge}

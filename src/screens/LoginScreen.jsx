@@ -7,6 +7,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { API_URL, API_KEY } from '@env';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
@@ -44,10 +45,15 @@ const LoginScreen = ({ navigation }) => {
       // Adjust the endpoint path according to your actual backend API
       const endpoint = '/auth/send-otp';
       // const endpoint = isSignUp ? '/auth/register' : '/auth/login';
-      
+      console.log("Sending OTP to:", API_URL + endpoint, "with phone:", phoneNumber);
       const response = await axios.post(`${API_URL}${endpoint}`, {
         phone: `${phoneNumber}`,
-      });
+      },{
+    headers: {
+      "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "true", // ✅ added
+    },
+  });
 
       if (response.status === 200) {
         setIsOtpSent(true);
@@ -72,13 +78,25 @@ const LoginScreen = ({ navigation }) => {
       const response = await axios.post(`${API_URL}/auth/verify-otp`, {
         phone: `${phoneNumber}`,
         otp: `${otp}`
-      });
+      },
+      {
+      headers: {
+        "Content-Type": "application/json",
+        "ngrok-skip-browser-warning": "true", // ✅ added
+      },
+    });
 
-      if (response.data.token) {
-        // Save token here (e.g., AsyncStorage) then navigate
-        Alert.alert(response.data?.status);
-        navigation.replace("Home");
+       if (response.data.token) {
+      // ✅ Store token locally
+      await AsyncStorage.setItem('userToken', response.data.token);
+
+      // Optional: store user data if available
+      if (response.data.user) {
+        await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
       }
+      // Alert.alert("Success", "Login successful");
+      navigation.replace("Home");
+    }
     } catch (error) {
       Alert.alert("Verification Failed", "The OTP you entered is incorrect.");
     } finally {

@@ -14,7 +14,7 @@ import {
 
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import RNPrint from 'react-native-print';
+// import RNPrint from 'react-native-print';
 import Share from 'react-native-share';
 import { useNavigation } from "@react-navigation/native";
 
@@ -101,10 +101,10 @@ export default function PaymentsScreen() {
 
     try {
       // 1. Generate and Print/Save PDF
-      const results = await RNPrint.print({
-        html: htmlContent,
-        fileName: 'Statement_Sadapoorna',
-      });
+      // const results = await RNPrint.print({
+      //   html: htmlContent,
+      //   fileName: 'Statement_Sadapoorna',
+      // });
 
       // 2. Share option (Optional: can also use react-native-share with base64 if needed)
       if (Platform.OS === 'android') {

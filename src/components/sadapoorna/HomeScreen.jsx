@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import React, { useMemo, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Dimensions,
@@ -25,6 +25,7 @@ import { ProductSelectionModal } from "./ProductSelectionModal";
 import { PromiseSection } from "./PromiseSection";
 import { PromoBanners } from "./PromoBanners";
 import { QuickActions } from "./QuickActions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -69,6 +70,8 @@ const ALL_PRODUCTS = Array.from({ length: 100 }).map((_, i) => {
   return { ...pick, id: `item-${i}`, name: `${pick.name} ${i + 1}` };
 });
 
+
+
 export default function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("none");
@@ -80,6 +83,20 @@ export default function App() {
   const [showCartDrawer, setShowCartDrawer] = useState(false);
 
   const openURL = (url) => Linking.openURL(url);
+
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    const data = await AsyncStorage.getItem("userData");
+
+    if (data) {
+      const parsedUser = JSON.parse(data);
+      setUser(parsedUser);
+    }
+  };
 
   const filteredData = useMemo(() => {
     let data = [...ALL_PRODUCTS];
@@ -121,13 +138,21 @@ export default function App() {
         style={styles.backgroundGradient}
       />
 
-      {/* 1. Greeting */}
       <View style={styles.helloContainer}>
-        <View>
-          <Text style={styles.helloText}>Healthy Morning,</Text>
-          <Text style={styles.userName}>Rahul ✨</Text>
-        </View>
+      <View>
+        <Text style={styles.helloText}>Welcome Back,</Text>
+
+        {/* 🔹 Dynamic Name */}
+        <Text style={styles.userName}>
+          {user?.owner_name || "User"} ✨
+        </Text>
+
+        {/* 🔹 Optional: Show shop name */}
+        <Text style={{ fontSize: 12, color: "gray" }}>
+          {user?.shop_name}
+        </Text>
       </View>
+    </View>
 
       {/* 2. Banners (Moved here, directly below Rahul) */}
       <View style={{ marginBottom: 15 }}>

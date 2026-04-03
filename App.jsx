@@ -20,6 +20,8 @@ import WishlistScreen from './src/screens/wishlist';
 import OffersScreen from './src/screens/offers';
 import Settings from './src/screens/settings';
 import LoadingScreen from './src/screens/LoadingScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
 
 const Stack = createStackNavigator();
 
@@ -34,18 +36,16 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="/about-us" component={AboutUsScreen} />
           <Stack.Screen name="/contact-us" component={Contactus} />
-        <Stack.Screen name="/help" component={Help} />
-        <Stack.Screen name="/my-bills" component={Mybill} />
- <Stack.Screen name="/my-orders" component={MyOrders} />
-  <Stack.Screen name="/payments" component={Payments} />
-<Stack.Screen name="/product-list" component={Productlist} />
-<Stack.Screen name="/profile" component={profile} />
-<Stack.Screen name="/tracker" component={Tracker} />
-<Stack.Screen name="/wishlist"component={WishlistScreen} />
-<Stack.Screen name="/offers" component ={OffersScreen} />
-<Stack.Screen name="/settings" component ={Settings} />
-
-
+          <Stack.Screen name="/help" component={Help} />
+          <Stack.Screen name="/my-bills" component={Mybill} />
+          <Stack.Screen name="/my-orders" component={MyOrders} />
+          <Stack.Screen name="/payments" component={Payments} />
+          <Stack.Screen name="/product-list" component={Productlist} />
+          <Stack.Screen name="/profile" component={profile} />
+          <Stack.Screen name="/tracker" component={Tracker} />
+          <Stack.Screen name="/wishlist"component={WishlistScreen} />
+          <Stack.Screen name="/offers" component ={OffersScreen} />
+          <Stack.Screen name="/settings" component ={Settings} />
         </Stack.Navigator>
       </NavigationContainer>
       </LoadingProvider>

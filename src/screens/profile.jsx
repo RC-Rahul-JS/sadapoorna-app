@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const THEME = {
   bg: "#FFFFFF",
@@ -43,7 +44,11 @@ export default function ProfileScreen() {
         { 
           text: "Logout", 
           style: "destructive", 
-          onPress: () => navigation.replace('Login') // Redirects to Login
+          onPress: async () =>{
+            await AsyncStorage.removeItem("userToken");
+            await AsyncStorage.removeItem("userData");
+            navigation.replace("Login"); // go to login screen
+        }
         }
       ]
     );

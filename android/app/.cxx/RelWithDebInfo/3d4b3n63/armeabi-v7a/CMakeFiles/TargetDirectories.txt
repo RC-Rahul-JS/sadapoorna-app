@@ -1,3 +1,0 @@
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/RelWithDebInfo/3d4b3n63/armeabi-v7a/CMakeFiles/appmodules.dir
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/RelWithDebInfo/3d4b3n63/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/pc/Desktop/sadapoorna-app/android/app/.cxx/RelWithDebInfo/3d4b3n63/armeabi-v7a/CMakeFiles/rebuild_cache.dir

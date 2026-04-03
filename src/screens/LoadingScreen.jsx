@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
@@ -53,8 +54,9 @@ export default function LoadingScreen() {
     ).start();
 
     // 3. Navigation Timer
-    const timer = setTimeout(() => {
-      navigation.replace('Login'); 
+    const timer = setTimeout(async () => {
+       const token = await AsyncStorage.getItem("userToken");
+       navigation.replace(token ? "Home" : "Login");
     }, 3500);
 
     return () => clearTimeout(timer);
