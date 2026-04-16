@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { API_URL, API_KEY } from "@env";
+import { API_URL } from "../../config"; // ✅ updated import';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const useApi = () => {
@@ -9,7 +9,7 @@ const useApi = () => {
 
   // 🔹 Get token from storage
   const getToken = async () => {
-    return await AsyncStorage.getItem("userToken");
+    return await AsyncStorage.getItem("token");
   };
 
   // 🔹 Common config with token
@@ -58,6 +58,7 @@ const useApi = () => {
         data,
         config
       );
+      // console.log(response)
       return response.data;
     } catch (err) {
       setError(err.response?.data?.message || err.message);

@@ -5,9 +5,10 @@ import {
   Dimensions, ScrollView, Animated, Easing, ActivityIndicator, Alert 
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { API_URL, API_KEY } from '@env';
+import { API_URL } from "../../config";
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +18,7 @@ const LoginScreen = ({ navigation }) => {
   const [isSignUp, setIsSignUp] = useState(false); // New State for Sign Up
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   // Logo Shine Animation Setup
   const shineAnim = useRef(new Animated.Value(-width * 0.4)).current; 
@@ -87,15 +89,11 @@ const LoginScreen = ({ navigation }) => {
     });
 
        if (response.data.token) {
-      // ✅ Store token locally
-      await AsyncStorage.setItem('userToken', response.data.token);
-
       // Optional: store user data if available
       if (response.data.user) {
         await AsyncStorage.setItem('userData', JSON.stringify(response.data.user));
       }
-      // Alert.alert("Success", "Login successful");
-      navigation.replace("Home");
+      login(response.data.token)
     }
     } catch (error) {
       Alert.alert("Verification Failed", "The OTP you entered is incorrect.");
@@ -179,7 +177,7 @@ return (
                     )}
                   </TouchableOpacity>
 
-                  <TouchableOpacity 
+                  {/* <TouchableOpacity 
                     onPress={() => setIsSignUp(!isSignUp)}
                     style={styles.toggleContainer}
                     disabled={loading}
@@ -188,7 +186,7 @@ return (
                       {isSignUp ? "Already have an account? " : "Don't have an account? "}
                       <Text style={styles.toggleAction}>{isSignUp ? "Login" : "Sign Up"}</Text>
                     </Text>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </View>
               ) : (
                 <View>
@@ -217,7 +215,7 @@ return (
                     )}
                   </TouchableOpacity>
 
-                  <TouchableOpacity onPress={() => setIsOtpSent(false)} disabled={loading}>
+                  <TouchableOpacity onPress={() =>( setIsOtpSent(false),setOtp(""))} disabled={loading}>
                     <Text style={styles.changeText}>Change Mobile Number</Text>
                   </TouchableOpacity>
                 </View>

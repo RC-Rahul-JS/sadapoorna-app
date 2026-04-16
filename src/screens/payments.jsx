@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // import RNPrint from 'react-native-print';
 import Share from 'react-native-share';
 import { useNavigation } from "@react-navigation/native";
+import useApi from "../context/useApi";
 
 const THEME = {
   bg: "#FFFFFF",
@@ -42,6 +43,23 @@ export default function PaymentsScreen() {
     { date: "08/02/2026", particular: "Payment - Bhagchad Nageshwar", debit: "0.00", credit: "1300.00", balance: "0.00" },
     { date: "01/05/2025", particular: "Opening Balance", debit: "0.00", credit: "0.00", balance: "0.00" },
   ]);
+
+   const { getRequest , postRequest } = useApi();
+
+  const gettransactions = async () => {
+    const res = await getRequest("/api/customer-statement");
+    if (res.status) {
+      console.log(res)
+      setEntries(res?.transactions || []);
+      setCurrentDue(res.closingBalance || 0);
+    } else {
+      Alert.alert("Error", res.error || "Failed to fetch invoices");
+    }
+  };
+
+  useEffect(() => {
+    gettransactions();
+  }, []);
 
   useEffect(() => {
     if (!isCustom) setPayAmount(currentDue.toString());
@@ -128,18 +146,20 @@ export default function PaymentsScreen() {
 
           <Text style={styles.headerTitle}>Statement & Payments</Text>
 
-          <TouchableOpacity onPress={downloadStatement} style={styles.miniBack}>
+          {/* <TouchableOpacity onPress={downloadStatement} style={styles.miniBack}>
             <Ionicons name="cloud-download" size={22} color={THEME.primary} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View style={{ width: 42 }} />
+          
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
           <View style={styles.mainCard}>
             <Text style={styles.label}>Current Outstanding</Text>
-            <Text style={styles.dueValue}>₹ {currentDue.toFixed(2)}</Text>
+            <Text style={styles.dueValue}>₹ {currentDue}</Text>
           </View>
 
-          <View style={styles.paySection}>
+          {/* <View style={styles.paySection}>
             <Text style={styles.sectionTitle}>Quick Payment</Text>
             <View style={styles.optionRow}>
               <TouchableOpacity
@@ -170,9 +190,9 @@ export default function PaymentsScreen() {
               <Text style={styles.razorText}>Pay ₹{payAmount} via Razorpay</Text>
               <Ionicons name="flash" size={18} color="#FFF" style={{ marginLeft: 8 }} />
             </TouchableOpacity>
-          </View>
+          </View> */}
 
-          <Text style={styles.sectionTitle}>Account Particulars</Text>
+          <Text style={styles.sectionTitle}>Last Transactions</Text>
           <View style={styles.table}>
             <View style={styles.thRow}>
               <Text style={[styles.th, { flex: 1.2 }]}>Date</Text>
@@ -181,9 +201,12 @@ export default function PaymentsScreen() {
             </View>
             {entries.map((entry, i) => (
               <View key={i} style={styles.tr}>
-                <Text style={[styles.td, { flex: 1.2 }]}>{entry.date}</Text>
+                <View style={{ flex: 1.2 }}>
+                  <Text style={styles.td}>{new Date(entry.date).toLocaleDateString('en-GB')}</Text>
+                  <Text style={[styles.td, { fontSize: 9, color: THEME.textMuted }]}>{new Date(entry.date).toLocaleTimeString('en-GB')}</Text>
+                </View>
                 <View style={{ flex: 2.5 }}>
-                  <Text style={styles.tdMain}>{entry.particular}</Text>
+                  <Text style={styles.tdMain}>{entry.narration||"N/A"}</Text>
                   <Text style={styles.tdSub}>Cr: {entry.credit} | Dr: {entry.debit}</Text>
                 </View>
                 <Text style={[styles.td, { flex: 1, textAlign: "right", fontWeight: "800" }]}>

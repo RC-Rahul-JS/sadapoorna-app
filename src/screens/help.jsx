@@ -15,6 +15,7 @@ import {
 // @ts-ignore
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
+import Footer from "../components/sadapoorna/Footer";
 
 const { width } = Dimensions.get("window");
 
@@ -29,12 +30,47 @@ const THEME = {
 };
 
 const FAQ_DATA = [
-  { id: 1, question: "How to cancel an order?", answer: "Go to My Orders, select your active order, and tap 'Cancel Order' before it is packed." },
-  { id: 2, question: "Delivery times and fees?", answer: "We usually deliver within 2-4 business days. Fees depend on your location and order value." },
-  { id: 3, question: "Refund Policy", answer: "Refunds are processed within 5-7 working days after the quality check of the returned item." },
-  { id: 4, question: "Is your rice 100% Organic?", answer: "Yes, Sadapoorna guarantees 100% organic and pesticide-free grains direct from farms." },
+  {
+    id: 1,
+    question: "How can I place an order?",
+    answer: "You can place an order through our mobile app or by contacting your assigned sales representative."
+  },
+  {
+    id: 2,
+    question: "What payment methods are available?",
+    answer: "We accept bank transfer, UPI, and cash payments depending on your account type."
+  },
+  {
+    id: 3,
+    question: "What is the delivery time?",
+    answer: "Orders are usually delivered within 1-3 days depending on stock availability and delivery location."
+  },
+  {
+    id: 4,
+    question: "Can I cancel or modify my order?",
+    answer: "Yes, you can cancel or modify your order before it is dispatched from the warehouse."
+  },
+  {
+    id: 5,
+    question: "What if I receive damaged or incorrect goods?",
+    answer: "Please report the issue within 24 hours with photos. Our team will verify and arrange replacement or adjustment."
+  },
+  {
+    id: 6,
+    question: "How are refunds handled?",
+    answer: "Refunds are processed after verification and are adjusted in your account or transferred within 3-7 working days."
+  },
+  {
+    id: 7,
+    question: "Do you provide GST invoices?",
+    answer: "Yes, all orders come with proper GST billing for registered customers."
+  },
+  {
+    id: 8,
+    question: "Is your rice organic or quality tested?",
+    answer: "All products go through quality checks. Specific varieties may be organic based on availability."
+  }
 ];
-
 export default function HelpScreen() {
   const navigation = useNavigation();
   const [expanded, setExpanded] = useState(null);
@@ -44,7 +80,7 @@ export default function HelpScreen() {
   };
 
   const handleWhatsAppSupport = () => {
-    Linking.openURL('whatsapp://send?phone=91XXXXXXXXXX&text=Hello Sadapoorna Support!');
+    Linking.openURL('whatsapp://send?phone=919977233055&text=Hello Sadapoorna Support!');
   };
 
   return (
@@ -120,11 +156,19 @@ export default function HelpScreen() {
 
           <TouchableOpacity 
             style={styles.emailBtn} 
-            onPress={() => Linking.openURL('mailto:support@sadapoorna.in')}
+            onPress={() => Linking.openURL('mailto:office@sadapoorna.in')}
           >
             <Ionicons name="mail-outline" size={22} color={THEME.textMain} style={{ marginRight: 12 }} />
             <Text style={styles.emailText}>Email Support</Text>
           </TouchableOpacity>
+          {/* NEW: Call Support Button */}
+        <TouchableOpacity 
+          style={styles.callBtn} 
+          onPress={() => Linking.openURL('tel:+917553524977')} // Replace with your actual number
+        >
+          <Ionicons name="call-outline" size={22} color={THEME.primary} style={{ marginRight: 12 }} />
+          <Text style={styles.callText}>Call Support</Text>
+        </TouchableOpacity>
 
           <Text style={styles.footerNote}>Typically responds within 2 hours</Text>
         </ScrollView>
@@ -215,8 +259,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: THEME.border
+    borderColor: THEME.border,
+    marginTop: 5,
+    marginBottom: 12
   },
   emailText: { color: THEME.textMain, fontWeight: "900", fontSize: 15 },
+  callBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: THEME.secondaryBg, // Light cream background
+    paddingVertical: 14,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: THEME.accent,
+    marginBottom: 20,
+  },
+  callText: { color: THEME.textMain, fontWeight: "700", fontSize: 16 },
   footerNote: { textAlign: 'center', color: THEME.textMuted, fontSize: 11, marginTop: 15, fontWeight: "600" }
 });

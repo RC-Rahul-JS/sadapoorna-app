@@ -1,4 +1,4 @@
-import React from "react";
+import React ,{useState,useEffect} from "react";
 import {
   Dimensions,
   Platform,
@@ -15,6 +15,8 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAuth } from "../context/AuthContext";
+import useApi from "../context/useApi";
 
 const THEME = {
   bg: "#FFFFFF",
@@ -28,6 +30,38 @@ const THEME = {
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
+  const { logout } = useAuth();
+
+ const [user, setUser] = useState(null);
+  const { getRequest , postRequest } = useApi();
+
+  const getInvoices = async () => {
+    const res = await getRequest("/api/customer/profile");
+    if (res.status) {
+      setUser(res?.user || []);
+      console.log("User Profile:", res?.user);
+    } else {
+      Alert.alert("Error", res.error || "Failed to fetch invoices");
+    }
+  };
+
+  useEffect(() => {
+    getInvoices();
+  }, []);
+const getInitials = (name) => {
+  if (!name) return '';
+
+  const words = name.trim().split(' ').filter(Boolean);
+
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  }
+
+  const first = words[0][0];
+  const last = words[words.length - 1][0];
+
+  return (first + last).toUpperCase();
+};
 
   // --- HANDLERS ---
 
@@ -44,11 +78,7 @@ export default function ProfileScreen() {
         { 
           text: "Logout", 
           style: "destructive", 
-          onPress: async () =>{
-            await AsyncStorage.removeItem("userToken");
-            await AsyncStorage.removeItem("userData");
-            navigation.replace("Login"); // go to login screen
-        }
+          onPress: async () =>logout()
         }
       ]
     );
@@ -70,9 +100,10 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-back" size={24} color={THEME.textMain} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>My Profile</Text>
-          <TouchableOpacity style={styles.miniBack} onPress={handleSettings}>
+          {/* <TouchableOpacity style={styles.miniBack} onPress={handleSettings}>
             <Ionicons name="settings-outline" size={20} color={THEME.textMuted} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View></View>
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -81,18 +112,19 @@ export default function ProfileScreen() {
           <View style={styles.profileHero}>
             <TouchableOpacity style={styles.avatarWrapper}>
               <View style={styles.avatar}>
-                <Text style={styles.avatarText}>R</Text>
+                <Text style={styles.avatarText}>{getInitials(user?.owner_name||user?.shop_name)}</Text>
               </View>
-              <View style={styles.cameraIcon}>
+              {/* <View style={styles.cameraIcon}>
                 <Ionicons name="camera" size={16} color="#FFF" />
-              </View>
+              </View> */}
             </TouchableOpacity>
-            <Text style={styles.name}>Rahul ✨</Text>
-            <Text style={styles.email}>rahulrc7089@gmail.com</Text>
+            {user?.shop_name && <Text style={styles.name}>{user?.shop_name.toUpperCase()} ✨</Text>}
+            <Text style={styles.shop}>{user?.owner_name.toUpperCase()}</Text>
+            <Text style={styles.email}>{user?.mobile}</Text>
           </View>
 
           {/* STATS */}
-          <View style={styles.statsBar}>
+          {/* <View style={styles.statsBar}>
             <TouchableOpacity style={styles.statItem} onPress={() => navigation.navigate('/my-orders')}>
               <Text style={styles.statNum}>12</Text>
               <Text style={styles.statLabel}>Orders</Text>
@@ -105,16 +137,16 @@ export default function ProfileScreen() {
               <Text style={styles.statNum}>450</Text>
               <Text style={styles.statLabel}>Points</Text>
             </View>
-          </View>
+          </View> */}
 
           {/* MENUS */}
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Account Settings</Text>
             <View style={styles.menuCard}>
-              <MenuItem icon="person-outline" title="Edit Profile" onPress={() => {}} />
-              <MenuItem icon="location-outline" title="Delivery Address" sub="Bhopal, MP" onPress={() => {}} />
+              {/* <MenuItem icon="person-outline" title="Edit Profile" onPress={() => {}} /> */}
+              <MenuItem icon="location-outline" title="Delivery Address" sub={user?.address}  />
               <MenuItem icon="receipt-outline" title="My Billing" onPress={() => navigation.navigate('/my-bills')} />
-              <MenuItem icon="notifications-outline" title="Notifications" onPress={() => {}} last />
+              <MenuItem icon="notifications-outline" title="Notifications" onPress={() => navigation.navigate('/coming-soon', { title: 'Notifications' })} last />
             </View>
           </View>
 
@@ -123,6 +155,8 @@ export default function ProfileScreen() {
             <View style={styles.menuCard}>
               <MenuItem icon="help-circle-outline" title="Help Center" onPress={() => navigation.navigate('/help')} />
               <MenuItem icon="information-circle-outline" title="About Us" onPress={handleAbout} />
+              <MenuItem icon="information-circle-outline" title="Privacy Policy" onPress={() => navigation.navigate('PrivacyPolicy')} />
+              <MenuItem icon="information-circle-outline" title="Terms & Conditions" onPress={() => navigation.navigate('TermsAndConditions')} />
               <MenuItem icon="log-out-outline" title="Logout" color={THEME.primary} onPress={handleLogout} last />
             </View>
           </View>
@@ -152,7 +186,7 @@ const MenuItem = ({ icon, title, sub, color, onPress, last }) => (
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: THEME.bg },
   secondBackground: { position: "absolute", top: 0, left: 0, right: 0, height: 300, backgroundColor: THEME.secondaryBg, zIndex: -1 },
-  header: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 50, paddingBottom: 15 },
+  header: { flexDirection: "row", alignItems: "center",gap:20, paddingHorizontal: 20,     marginTop: Platform.OS === "android" ? (StatusBar.currentHeight || 0) + 10 : 10, paddingBottom: 15 },
   miniBack: { width: 40, height: 40, borderRadius: 12, backgroundColor: "#FFF", justifyContent: "center", alignItems: "center", elevation: 3 },
   headerTitle: { fontSize: 18, fontWeight: "900", color: THEME.textMain },
   scrollContent: { paddingBottom: 30 },
@@ -161,7 +195,8 @@ const styles = StyleSheet.create({
   avatar: { width: 90, height: 90, borderRadius: 45, backgroundColor: THEME.primary, justifyContent: "center", alignItems: "center" },
   avatarText: { fontSize: 36, fontWeight: "900", color: "#FFF" },
   cameraIcon: { position: "absolute", bottom: 0, right: 0, backgroundColor: "#000", width: 28, height: 28, borderRadius: 14, justifyContent: "center", alignItems: "center", borderSize: 2, borderColor: "#FFF" },
-  name: { fontSize: 22, fontWeight: "900", color: THEME.textMain },
+  name: { fontSize: 18, fontWeight: "900", color: THEME.textMain },
+  shop: { fontSize: 16, fontWeight: "800", color: THEME.textMuted },
   email: { fontSize: 14, color: THEME.textMuted },
   statsBar: { flexDirection: "row", backgroundColor: "#FFF", marginHorizontal: 20, borderRadius: 15, padding: 15, elevation: 2, marginBottom: 20 },
   statItem: { flex: 1, alignItems: "center" },
