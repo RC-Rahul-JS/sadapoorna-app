@@ -1,4 +1,5 @@
 import React, { Profiler } from 'react';
+import './global.css';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -20,35 +21,63 @@ import WishlistScreen from './src/screens/wishlist';
 import OffersScreen from './src/screens/offers';
 import Settings from './src/screens/settings';
 import LoadingScreen from './src/screens/LoadingScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
+import { AuthProvider, useAuth } from './src/context/AuthContext';
+import ComingSoonScreen from './src/screens/ComingSoonScreen';
+import PrivacyPolicyScreen from './src/screens/Privacy_policy';
+import TermsAndConditionsScreen from './src/screens/TermsAndConditionsScreen';
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
       <LoadingProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Loading" component={LoadingScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="/about-us" component={AboutUsScreen} />
-          <Stack.Screen name="/contact-us" component={Contactus} />
-          <Stack.Screen name="/help" component={Help} />
-          <Stack.Screen name="/my-bills" component={Mybill} />
-          <Stack.Screen name="/my-orders" component={MyOrders} />
-          <Stack.Screen name="/payments" component={Payments} />
-          <Stack.Screen name="/product-list" component={Productlist} />
-          <Stack.Screen name="/profile" component={profile} />
-          <Stack.Screen name="/tracker" component={Tracker} />
-          <Stack.Screen name="/wishlist"component={WishlistScreen} />
-          <Stack.Screen name="/offers" component ={OffersScreen} />
-          <Stack.Screen name="/settings" component ={Settings} />
-        </Stack.Navigator>
-      </NavigationContainer>
+         <MainApp />
       </LoadingProvider>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }
+
+const MainApp = () => {
+   const { isLoggedIn } = useAuth();
+    if (isLoggedIn === null) return <LoadingScreen />;
+  return (
+     <NavigationContainer>
+         {isLoggedIn ? <AppStack /> : <AuthStack />}
+      </NavigationContainer>
+  );
+} 
+
+const AuthStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+    </Stack.Navigator>
+  );
+};
+
+const AppStack = () => {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="/about-us" component={AboutUsScreen} />
+      <Stack.Screen name="/contact-us" component={Contactus} />
+      <Stack.Screen name="/help" component={Help} />
+      <Stack.Screen name="/my-bills" component={Mybill} />
+      <Stack.Screen name="/my-orders" component={MyOrders} />
+      <Stack.Screen name="/payments" component={Payments} />
+      <Stack.Screen name="/product-list" component={Productlist} />
+      <Stack.Screen name="/profile" component={profile} />
+      <Stack.Screen name="/tracker" component={Tracker} />
+      <Stack.Screen name="/wishlist" component={WishlistScreen} />
+      <Stack.Screen name="/offers" component={OffersScreen} />
+      <Stack.Screen name="/settings" component={Settings} />
+      <Stack.Screen name="/coming-soon" component={ComingSoonScreen} />
+      <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
+      <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+    </Stack.Navigator>
+  );
+};

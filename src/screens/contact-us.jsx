@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Footer from "../components/sadapoorna/Footer";
 
 const THEME = {
   bg: "#FFFFFF",
@@ -28,7 +29,7 @@ const THEME = {
 
 export default function ContactUsScreen() {
   const navigation = useNavigation();
-  const phone1 = "7553524977";
+  const phone1 = "9977233055";
   const email = "office@sadapoorna.in";
 
   const handleCall = (number) => {
@@ -92,13 +93,13 @@ export default function ContactUsScreen() {
           <View style={styles.infoRow}>
             <TouchableOpacity
               style={styles.infoCard}
-              onPress={() => handleCall(phone1)}
+              onPress={() => handleCall(7553524977)}
             >
               <View style={[styles.iconCircle, { backgroundColor: "#E8F5E9" }]}>
                 <Ionicons name="call" size={20} color="#2E7D32" />
               </View>
               <Text style={styles.infoLabel}>Call Us</Text>
-              <Text style={styles.infoValue}>{phone1}</Text>
+              <Text style={styles.infoValue}>7553524977</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.infoCard} onPress={handleWhatsApp}>
@@ -124,7 +125,7 @@ export default function ContactUsScreen() {
           </TouchableOpacity>
 
           {/* Form Section */}
-          <Text style={styles.sectionTitle}>Send us a Message</Text>
+          {/* <Text style={styles.sectionTitle}>Send us a Message</Text>
           <TextInput
             style={styles.input}
             placeholder="Your Name"
@@ -145,23 +146,9 @@ export default function ContactUsScreen() {
               color="#FFF"
               style={{ marginLeft: 10 }}
             />
-          </TouchableOpacity>
-
-          {/* Partner Footer */}
-          <View style={styles.footerBrand}>
-            <TouchableOpacity
-              style={styles.managedByContainer}
-              onPress={() => openURL("https://duniyape.in")}
-            >
-              <Text style={styles.managedByText}>Technology Partner</Text>
-              <Image
-                source={{ uri: "https://duniyape.in/img/logo.png" }}
-                style={styles.duniyapeLogo}
-              />
-            </TouchableOpacity>
-            <Text style={styles.copyright}>© 2026 SADAPOORNA TRADERS.</Text>
-          </View>
+          </TouchableOpacity> */}
         </ScrollView>
+          <Footer/>
       </SafeAreaView>
     </View>
   );

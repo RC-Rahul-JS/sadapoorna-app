@@ -26,6 +26,8 @@ import { PromiseSection } from "./PromiseSection";
 import { PromoBanners } from "./PromoBanners";
 import { QuickActions } from "./QuickActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
+import Footer from './Footer';
 
 const { width } = Dimensions.get("window");
 
@@ -81,6 +83,7 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showWeightModal, setShowWeightModal] = useState(false);
   const [showCartDrawer, setShowCartDrawer] = useState(false);
+  const navigation = useNavigation();
 
   const openURL = (url) => Linking.openURL(url);
 
@@ -95,6 +98,8 @@ export default function App() {
     if (data) {
       const parsedUser = JSON.parse(data);
       setUser(parsedUser);
+    }else {
+      navigation.replace("Home");
     }
   };
 
@@ -164,7 +169,7 @@ export default function App() {
       <QuickActions />
 
       {/* 4. Search Bar */}
-      <View style={styles.searchContainer}>
+      {/* <View style={styles.searchContainer}>
         <Ionicons
           name="search-outline"
           size={20}
@@ -181,10 +186,10 @@ export default function App() {
             setLimit(12);
           }}
         />
-      </View>
+      </View> */}
 
       {/* 5. Note Section */}
-      <View style={styles.noteContainer}>
+      {/* <View style={styles.noteContainer}>
         <View style={styles.noteHeader}>
           <Ionicons name="alert-circle" size={16} color={THEME.primary} />
           <Text style={styles.noteTitle}> Note:</Text>
@@ -196,10 +201,10 @@ export default function App() {
           </Text>
           .
         </Text>
-      </View>
+      </View> */}
 
       {/* 6. Filter Chips */}
-      <ScrollView
+      {/* <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.filterBar}
@@ -225,47 +230,7 @@ export default function App() {
         ))}
       </ScrollView>
       
-      <Text style={styles.sectionTitle}>Popular Products</Text>
-    </View>
-  );
-
-  const Footer = () => (
-    <View style={styles.footerBrand}>
-      <TouchableOpacity onPress={() => openURL("https://sadapoorna.in")}>
-        <Image
-          source={{ uri: "https://sadapoorna.in/icons/Group.png" }}
-          style={styles.footerLogo}
-        />
-      </TouchableOpacity>
-      <Text style={styles.footerText}>
-        Rooted in tradition and driven by purity.
-      </Text>
-
-      <View style={styles.socialRow}>
-        <Ionicons name="logo-facebook" size={22} color={THEME.textMuted} />
-        <Ionicons
-          name="logo-instagram"
-          size={22}
-          color={THEME.textMuted}
-          style={{ marginHorizontal: 25 }}
-        />
-        <Ionicons name="logo-twitter" size={22} color={THEME.textMuted} />
-      </View>
-
-      <TouchableOpacity
-        style={styles.managedByContainer}
-        onPress={() => openURL("https://duniyape.in")}
-      >
-        <Text style={styles.managedByText}>Managed by</Text>
-        <Image
-          source={{ uri: "https://duniyape.in/img/logo.png" }}
-          style={styles.duniyapeLogo}
-        />
-      </TouchableOpacity>
-
-      <Text style={styles.copyright}>
-        © 2026 SADAPOORNA TRADERS. All Rights Reserved.
-      </Text>
+      <Text style={styles.sectionTitle}>Popular Products</Text> */}
     </View>
   );
 
@@ -291,7 +256,7 @@ export default function App() {
           ListHeaderComponent={Header}
           ListFooterComponent={() => (
             <View>
-              {filteredData.length >= limit && (
+              {/* {filteredData.length >= limit && (
                 <View style={styles.seeMoreContainer}>
                   <TouchableOpacity
                     style={styles.seeMoreBtn}
@@ -305,7 +270,7 @@ export default function App() {
                     />
                   </TouchableOpacity>
                 </View>
-              )}
+              )} */}
               <Footer />
             </View>
           )}
@@ -313,15 +278,15 @@ export default function App() {
           keyExtractor={(item) => item.id}
           columnWrapperStyle={styles.columnWrapper}
           contentContainerStyle={styles.scrollContent}
-          renderItem={({ item }) => (
-            <ProductCard
-              item={item}
-              onAddPress={() => {
-                setSelectedProduct(item);
-                setShowWeightModal(true);
-              }}
-            />
-          )}
+          // renderItem={({ item }) => (
+          // <ProductCard
+          //     item={item}
+          //     onAddPress={() => {
+          //       setSelectedProduct(item);
+          //       setShowWeightModal(true);
+          //     }}
+          //   />
+          // )}
         />
 
         <ProductSelectionModal
@@ -429,7 +394,7 @@ const styles = StyleSheet.create({
   },
   filterChipText: { fontSize: 12, fontWeight: "700", color: THEME.textMuted },
   filterChipTextActive: { color: "#FFF" },
-  scrollContent: { paddingBottom: 30 },
+  // scrollContent: { paddingBottom: 30 },
   columnWrapper: { justifyContent: "space-between", paddingHorizontal: 25 },
   seeMoreContainer: { paddingHorizontal: 25, marginTop: 10 },
   seeMoreBtn: {
@@ -453,13 +418,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 40,
     backgroundColor: THEME.secondaryBg,
-    marginTop: 20,
+    marginTop: 10,
   },
   footerLogo: {
     width: 140,
     height: 50,
     resizeMode: "contain",
-    marginBottom: 15,
+    marginBottom: 5,
   },
   footerText: {
     textAlign: "center",
@@ -469,16 +434,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
   },
   socialRow: { flexDirection: "row", marginBottom: 25 },
-  managedByContainer: {
+ managedByContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    backgroundColor: "#F9F9F9", // Very subtle grey
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: THEME.border,
+    marginBottom: 15
   },
   managedByText: {
     fontSize: 11,
     color: THEME.textMuted,
-    marginRight: 6,
-    fontWeight: "600",
+    fontWeight: "500",
+  },
+  brandText: {
+    color: THEME.primary, // Using your red for the brand name
+    fontWeight: "700",
   },
   duniyapeLogo: { width: 70, height: 25, resizeMode: "contain" },
   copyright: { fontSize: 10, color: THEME.textMuted, marginBottom: 20 },

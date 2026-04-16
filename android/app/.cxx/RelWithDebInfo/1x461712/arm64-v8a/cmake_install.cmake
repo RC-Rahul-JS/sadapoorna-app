@@ -47,10 +47,13 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/rnasyncstorage_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/RNMapsSpecs_autolinked_build/cmake_install.cmake")
+  include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/rnreanimated_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/safeareacontext_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/rnscreens_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/RNShareSpec_autolinked_build/cmake_install.cmake")
   include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/RNVectorIconsSpec_autolinked_build/cmake_install.cmake")
+  include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/RNCWebViewSpec_autolinked_build/cmake_install.cmake")
+  include("C:/Users/pc/Desktop/Workspace/sadapoorna-app/android/app/.cxx/RelWithDebInfo/1x461712/arm64-v8a/rnworklets_autolinked_build/cmake_install.cmake")
 
 endif()
 

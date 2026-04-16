@@ -15,6 +15,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation } from "@react-navigation/native";
+import Footer from "../components/sadapoorna/Footer";
 
 const { width } = Dimensions.get("window");
 
@@ -144,38 +145,8 @@ export default function AboutUsScreen() {
                 text="Sadapoorna never disappoints! Feeding my family the healthiest food."
               />
             </ScrollView>
-
-            <View style={styles.footerBrand}>
-              <Image
-                source={{ uri: "https://sadapoorna.in/icons/Group.png" }}
-                style={styles.footerLogo}
-              />
-              <Text style={styles.footerText}>
-                Rooted in tradition and driven by purity.
-              </Text>
-              
-              <View style={styles.socialRow}>
-                <Ionicons name="logo-facebook" size={22} color={THEME.textMuted} />
-                <Ionicons name="logo-instagram" size={22} color={THEME.textMuted} style={{ marginHorizontal: 25 }} />
-                <Ionicons name="logo-twitter" size={22} color={THEME.textMuted} />
-              </View>
-
-              <TouchableOpacity
-                style={styles.managedByContainer}
-                onPress={() => openURL("https://duniyape.in")}
-              >
-                <Text style={styles.managedByText}>Managed by</Text>
-                <Image
-                  source={{ uri: "https://duniyape.in/img/logo.png" }}
-                  style={styles.duniyapeLogo}
-                />
-              </TouchableOpacity>
-
-              <Text style={styles.copyright}>
-                © 2026 SADAPOORNA TRADERS. All Rights Reserved.
-              </Text>
-            </View>
           </View>
+           <Footer />
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -271,8 +242,28 @@ const styles = StyleSheet.create({
   footerLogo: { width: 140, height: 50, resizeMode: "contain", marginBottom: 15 },
   footerText: { textAlign: "center", fontSize: 12, color: THEME.textMuted, marginBottom: 20 },
   socialRow: { flexDirection: "row", marginBottom: 25 },
-  managedByContainer: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
-  managedByText: { fontSize: 11, color: THEME.textMuted, marginRight: 6, fontWeight: "600" },
+  // managedByContainer: { flexDirection: "row", alignItems: "center", marginBottom: 15 },
+  // managedByText: { fontSize: 11, color: THEME.textMuted, marginRight: 6, fontWeight: "600" },
+  managedByContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    backgroundColor: "#F9F9F9", // Very subtle grey
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: THEME.border,
+    marginBottom: 15
+  },
+  managedByText: {
+    fontSize: 11,
+    color: THEME.textMuted,
+    fontWeight: "500",
+  },
+  brandText: {
+    color: THEME.primary, // Using your red for the brand name
+    fontWeight: "700",
+  },
   duniyapeLogo: { width: 70, height: 25, resizeMode: "contain" },
   copyright: { fontSize: 10, color: THEME.textMuted },
 });

@@ -9,7 +9,6 @@ import {
   Easing
 } from "react-native";
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
@@ -21,7 +20,7 @@ const THEME = {
 };
 
 export default function LoadingScreen() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -56,7 +55,7 @@ export default function LoadingScreen() {
     // 3. Navigation Timer
     const timer = setTimeout(async () => {
        const token = await AsyncStorage.getItem("userToken");
-       navigation.replace(token ? "Home" : "Login");
+      //  navigation.replace(token ? "Home" : "Login");
     }, 3500);
 
     return () => clearTimeout(timer);

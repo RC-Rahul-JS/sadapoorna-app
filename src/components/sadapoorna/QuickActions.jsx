@@ -14,17 +14,17 @@ const { width } = Dimensions.get("window");
 const THEME = { textMain: "#000000", border: "#EEEEEE" };
 
 const QUICK_ACTIONS = [
-  { label: "My Order", icon: "cube-outline", route: "/my-orders" },
   { label: "My Bill", icon: "receipt-outline", route: "/my-bills" },
   { label: "Payments", icon: "card-outline", route: "/payments" },
-  { label: "Product List", icon: "list-outline", route: "/product-list" },
   { label: "About Us", icon: "business-outline", route: "/about-us" },
   { label: "Contact Us", icon: "call-outline", route: "/contact-us" },
   { label: "Profile", icon: "person-outline", route: "/profile" },
-  { label: "Tracker", icon: "location-outline", route: "/tracker" },
-  { label: "Wishlist", icon: "heart-outline", route: "/wishlist" },
-  { label: "Offers", icon: "pricetag-outline", route: "/offers" },
-  { label: "Settings", icon: "settings-outline", route: "/settings" },
+  // { label: "Tracker", icon: "location-outline", route: "/tracker" },
+  // { label: "Wishlist", icon: "heart-outline", route: "/wishlist" },
+  { label: "Product List", icon: "list-outline", route: "/product-list" },
+  // { label: "Offers", icon: "pricetag-outline", route: "/coming-soon" },
+  // { label: "Settings", icon: "settings-outline", route: "/settings" },
+  // { label: "My Order", icon: "cube-outline", route: "/coming-soon" },
   { label: "Help", icon: "help-buoy-outline", route: "/help" },
 ];
 
@@ -40,7 +40,7 @@ export const QuickActions = () => {
             key={i}
             style={styles.gridItem}
             onPress={() => {
-              if (item.route) router.navigate(item.route);
+              if (item.route) router.navigate(item.route, { title: item.label });
             }}
           >
             <View

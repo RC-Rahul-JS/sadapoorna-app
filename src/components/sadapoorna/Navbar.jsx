@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Animated,
   Easing,
@@ -14,6 +14,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 // 1. Import useSafeAreaInsets
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const THEME = {
   primary: "#EE2726",
@@ -38,12 +40,37 @@ export const Navbar = ({ cartCount, onCartPress }) => {
       }).start(() => startShimmer());
     };
     startShimmer();
+    loadUser();
   }, []);
 
+  const [user, setUser] = useState(null);
   const translateX = animatedValue.interpolate({
     inputRange: [0, 1],
     outputRange: [-180, 180],
   });
+
+  const loadUser = async () => {
+    const data = await AsyncStorage.getItem("userData");
+    if (data) {
+      const parsedUser = JSON.parse(data);
+      setUser(parsedUser);
+    }
+  };
+
+const getInitials = (name) => {
+  if (!name) return '';
+
+  const words = name.trim().split(' ').filter(Boolean);
+
+  if (words.length === 1) {
+    return words[0][0].toUpperCase();
+  }
+
+  const first = words[0][0];
+  const last = words[words.length - 1][0];
+
+  return (first + last).toUpperCase();
+};
 
   return (
     <View style={styles.navContainer}>
@@ -65,7 +92,7 @@ export const Navbar = ({ cartCount, onCartPress }) => {
           onPress={() => navigation.navigate('/profile')} 
         >
           <View style={styles.avatarBorder}>
-            <Text style={styles.avatarText}>RA</Text>
+            <Text style={styles.avatarText}>{getInitials(user?.owner_name||user?.shop_name)}</Text>
           </View>
         </TouchableOpacity>
 
@@ -86,8 +113,9 @@ export const Navbar = ({ cartCount, onCartPress }) => {
             />
           </Animated.View>
         </View>
+        <View style={styles.iconWrapper}></View>
 
-        <TouchableOpacity onPress={onCartPress} activeOpacity={0.7}>
+        {/* <TouchableOpacity onPress={onCartPress} activeOpacity={0.7}>
           <View style={styles.iconWrapper}>
             <Ionicons name="bag-handle-outline" size={28} color="#FFFFFF" />
             {cartCount > 0 && (
@@ -96,7 +124,7 @@ export const Navbar = ({ cartCount, onCartPress }) => {
               </View>
             )}
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
